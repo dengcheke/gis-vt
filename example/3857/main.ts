@@ -12,9 +12,9 @@ import './style.scss';
 
 const dataMap = {
     'test-wrap:3857': data_wrap,
-    'river-3857': '/river_3857.geojson',
-    'texas:4326': '/tx_texas_zip_codes_geo.min.json',
-    'california:4326': '/ca_california_zip_codes_geo.min.json'
+    'river-3857': './river_3857.geojson',
+    'texas:4326': './tx_texas_zip_codes_geo.min.json',
+    'california:4326': './ca_california_zip_codes_geo.min.json'
 } as const;
 type K = keyof typeof dataMap;
 
