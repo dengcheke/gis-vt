@@ -213,7 +213,7 @@ console.groupEnd();
 //
 const gui = new GUI();
 const params = {
-    flow: !true,
+    flow: true,
     lineWidth: 8,
     flowSpeed: 20,
     distanceStrategy: options.multiLineDistanceStrategy,
@@ -454,7 +454,6 @@ function buildPolygon(polygons: VPolygon[]) {
                     }
                 }
                 colorStr ??= 'rgba(0, 0, 0, 0.3)';
-                console.log(colorStr)
                 const [r, g, b, a] = colorToRGBA(colorStr);
                 colors.push(r, g, b);
             }
