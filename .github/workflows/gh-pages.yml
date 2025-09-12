@@ -25,7 +25,7 @@ jobs:
         run: pnpm i
 
       - name: Build examples
-        run: npm run build
+        run: npm run build-example
     
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
