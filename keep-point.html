@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>keep point</title>
+</head>
+
+<body>
+    <div id="tip">
+        <p>鼠标点击：前进</p>
+        <p>Esc: 后退</p>
+    </div>
+    <div style="display: flex;flex-direction: column;align-items: flex-start;gap: 10px;">
+        <div id="curTile"></div>
+        <div style="position: relative;">
+            <canvas id="gl"></canvas>
+            <canvas id="d2"></canvas>
+        </div>
+    </div>
+    <script type="module" src="/example/keep-point/main.ts"></script>
+</body>
+
+</html>
