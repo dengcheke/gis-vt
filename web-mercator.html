@@ -5,12 +5,60 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WebMercator</title>
+    <style>
+        #tip {
+            position: absolute;
+            right: 100px;
+            bottom: 0;
+            background-color: black;
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+        #crs {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            background-color: gray;
+            padding: 10px 20px;
+        }
+    </style>
 </head>
 
 <body>
+    <script>
+        function handleShowCRS(show) {
+            const div = document.body.querySelector('#crs');
+            div.style.display = show ? 'block' : 'none';
+        }
+    </script>
     <div id="z"></div>
     <div id="app"></div>
-    <div id="tip">将geojson文件拖拽入并查看</div>
+    <div id="tip" onmouseenter="handleShowCRS(true)" onmouseleave="handleShowCRS(false)">
+        <div>将geojson文件拖拽入并查看</div>
+        <div style="margin-left: 20px;">如何设置坐标系?</div>
+        <div id="crs" style="display:none;">
+            <p>坐标系为顶层crs属性</p>
+            <pre><code>{
+    type: "FeatureCollection",
+    features: [...],
+
+    //crs 不存在则视为4326
+    crs:{
+        type:"name",
+        properties:{
+            name: "urn:ogc:def:crs:EPSG::3857",
+
+            // 可以是proj或wkt字符串, 非4326或3857必须提供
+            // 参考proj4.defs
+            defs: ..., 
+        }
+    }
+}</code></pre>
+        </div>
+
+    </div>
     <script type="module" src="/example/3857/main.ts"></script>
 </body>
 

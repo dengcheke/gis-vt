@@ -12,9 +12,9 @@ import './style.scss';
 
 const dataMap = {
     'test-wrap:3857': data_wrap,
-    'river-3857': './river_3857.geojson',
-    'texas:4326': './tx_texas_zip_codes_geo.min.json',
-    'california:4326': './ca_california_zip_codes_geo.min.json'
+    'california_4326': './ca_california_zip_codes_geo.min.json',
+    'river_3857': './river_3857.geojson',
+    'texas_4326': './tx_texas_zip_codes_geo.min.json'
 } as const;
 type K = keyof typeof dataMap;
 
@@ -25,8 +25,10 @@ const params = {
     wrapY: false,
 }
 const gui = new GUI();
-gui.add(params, 'data', Object.keys(dataMap)).onChange((v: K) => loadData(v));
-
+//file is big, only in local 
+if(import.meta.env.DEV){
+    gui.add(params, 'data', Object.keys(dataMap)).onChange((v: K) => loadData(v));
+}
 
 let curDataSource: Feature[];
 let sourceExtent: Extent;

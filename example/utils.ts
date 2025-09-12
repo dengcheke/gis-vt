@@ -90,7 +90,13 @@ export function getCRS(data: any) {
         //"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::3857" } }
         //urn:ogc:def:crs:AUTHORITY:VERSION:CODE
         if (crs.type === 'name') {
-            return 'EPSG:' + crs.properties.name.match(/urn:ogc:def:crs:(.*):(.*):(.*)$/)[3];
+            const name = 'EPSG:' + crs.properties.name.match(/urn:ogc:def:crs:(.*):(.*):(.*)$/)[3];
+            const projDefs = proj4.defs(name);
+            if (!projDefs) {
+                const defs = crs.properties.defs;
+                if (!defs) throw new Error(`坐标系${name}定义未提供`);
+            }
+            return name;
         } else {
             console.error('解析crs失败,', crs);
             throw new Error(`解析crs失败`)

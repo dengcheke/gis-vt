@@ -10,6 +10,7 @@ console.log(entrys);
 export default defineConfig({
     base: './',
     build: {
+        copyPublicDir:false,
         sourcemap: true,
         outDir: 'example-build',
         minify: false,

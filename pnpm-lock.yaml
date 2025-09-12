@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@types/geojson':
+        specifier: ^7946.0.16
+        version: 7946.0.16
     devDependencies:
       '@types/d3':
         specifier: ^7.4.3
@@ -14,9 +18,6 @@ importers:
       '@types/earcut':
         specifier: ^3.0.0
         version: 3.0.0
-      '@types/geojson':
-        specifier: ^7946.0.16
-        version: 7946.0.16
       '@types/node':
         specifier: ^24.3.0
         version: 24.3.0
