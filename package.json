@@ -1,5 +1,5 @@
 {
-    "name": "vector-tile",
+    "name": "gis-vt",
     "version": "1.0.0",
     "description": "modified version of geojson-vt",
     "keywords": [
@@ -23,7 +23,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "https://github.com/dengcheke/vector-tile.git"
+        "url": "https://github.com/dengcheke/gis-vt.git"
     },
     "scripts": {
         "dev": "vite --config ./vite.example.ts",
