@@ -44,7 +44,7 @@ export function getTileChildren(tile: Tile, tileScheme: TileScheme) {
     return getTileChildrenXYZ(tile).map(p => getTile(tileScheme, p));
 }
 
-export function getParentXYZW({ x, y, z }: TileXYZ) {
+export function getParentXYZ({ x, y, z }: TileXYZ) {
     return {
         z: z - 1,
         x: Math.floor(x / 2),
@@ -53,7 +53,7 @@ export function getParentXYZW({ x, y, z }: TileXYZ) {
 }
 
 export function getTileParent(tile: Tile, tileScheme: TileScheme) {
-    return getTile(tileScheme, getParentXYZW(tile));
+    return getTile(tileScheme, getParentXYZ(tile));
 }
 
 //https://github.com/mapbox/geojson-vt/blob/main/src/index.js 
