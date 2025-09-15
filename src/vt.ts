@@ -1,6 +1,7 @@
 import { assert, clamp, groupBy, isNil } from "es-toolkit";
 import type { BBox, Feature } from "geojson";
-import { bboxDetail, resolveVFeatureBBox } from "./bbox";
+import { bboxDetail } from "./bbox";
+import { resolveVFeaturesBBox } from "./utils";
 import { clipVT } from "./clip";
 import { toVFeatures } from "./convert";
 import {
@@ -361,7 +362,7 @@ export function createVectorTile(props: VectorTileOptions) {
             const tileNode = $tiles.get(key);
             tileNode.version++;
             if (!tileNode.hasDrillDown && tileNode.tile.z > $options.maxZoom) {
-                tileNode.sourceBBox = resolveVFeatureBBox(tileNode.source);
+                tileNode.sourceBBox = resolveVFeaturesBBox(tileNode.source);
             }
         });
         return changeTileKeys;

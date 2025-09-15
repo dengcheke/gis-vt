@@ -1,6 +1,7 @@
 
 
-import type { Integer, Path } from "./interface";
+import type { BBox } from "geojson";
+import type { Integer, Path, VFeature } from "./interface";
 
 
 //大于等于某个数的最小的2的幂
@@ -44,4 +45,24 @@ export function Bresenham_calcLinePixels(x0: Integer, y0: Integer, x1: Integer, 
         }
     }
     return result;
+}
+export function resolveVFeaturesBBox(vfs: VFeature[]) {
+    let xmin = Infinity, xmax = -Infinity, ymin = Infinity, ymax = -Infinity;
+    vfs.forEach((vf) => {
+        switch (vf.type) {
+            case "point":
+                xmin = Math.min(xmin, vf.coordinates[0]);
+                ymin = Math.min(ymin, vf.coordinates[1]);
+                xmax = Math.max(xmax, vf.coordinates[0]);
+                ymax = Math.max(ymax, vf.coordinates[1]);
+                break;
+            case "polyline":
+            case "polygon":
+                xmin = Math.min(xmin, vf.bbox[0]);
+                ymin = Math.min(ymin, vf.bbox[1]);
+                xmax = Math.max(xmax, vf.bbox[2]);
+                ymax = Math.max(ymax, vf.bbox[3]);
+        }
+    });
+    return [xmin, ymin, xmax, ymax] as BBox;
 }

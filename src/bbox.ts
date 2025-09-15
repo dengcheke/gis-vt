@@ -1,5 +1,5 @@
 import type { BBox } from "geojson";
-import type { Coord, VFeature } from "./interface";
+import type { Coord } from "./interface";
 
 export function bboxFromPoints(points: Coord[]) {
     let xmin = Infinity,
@@ -12,30 +12,6 @@ export function bboxFromPoints(points: Coord[]) {
         xmax = Math.max(xmax, p[0]);
         ymax = Math.max(ymax, p[1]);
     }
-    return [xmin, ymin, xmax, ymax] as BBox;
-}
-
-export function resolveVFeatureBBox(vfs: VFeature[]) {
-    let xmin = Infinity,
-        xmax = -Infinity,
-        ymin = Infinity,
-        ymax = -Infinity;
-    vfs.forEach((vf) => {
-        switch (vf.type) {
-            case "point":
-                xmin = Math.min(xmin, vf.coordinates[0]);
-                ymin = Math.min(ymin, vf.coordinates[1]);
-                xmax = Math.max(xmax, vf.coordinates[0]);
-                ymax = Math.max(ymax, vf.coordinates[1]);
-                break;
-            case "polyline":
-            case "polygon":
-                xmin = Math.min(xmin, vf.bbox[0]);
-                ymin = Math.min(ymin, vf.bbox[1]);
-                xmax = Math.max(xmax, vf.bbox[2]);
-                ymax = Math.max(ymax, vf.bbox[3]);
-        }
-    });
     return [xmin, ymin, xmax, ymax] as BBox;
 }
 

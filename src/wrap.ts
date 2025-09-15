@@ -1,6 +1,7 @@
 
 import type { BBox } from "geojson";
-import { bboxDetail, resolveVFeatureBBox, translateBBox } from "./bbox";
+import { bboxDetail, translateBBox } from "./bbox";
+import { resolveVFeaturesBBox } from "./utils";
 import { clipVT } from "./clip";
 import { type Coord, type VFeature, type VTOption } from "./interface";
 export function wrap(fs: VFeature[], option: VTOption): {
@@ -9,7 +10,7 @@ export function wrap(fs: VFeature[], option: VTOption): {
 } {
     const { tileScheme, buffer } = option;
     const { worldBBox, wrapX, wrapY } = tileScheme;
-    const bbox = resolveVFeatureBBox(fs);
+    const bbox = resolveVFeaturesBBox(fs);
     if (!wrapX && !wrapY) return { data: fs, bbox };
 
     const { xmin, xmax, ymin, ymax, width, height } = bboxDetail(worldBBox);
@@ -31,7 +32,7 @@ export function wrap(fs: VFeature[], option: VTOption): {
         if (top) fs.push(...shiftFeatureCoords(top.data, [0, -height]));
         if (bottom) fs.push(...shiftFeatureCoords(bottom.data, [0, height]));
     }
-    return { data: fs, bbox: resolveVFeatureBBox(fs) };
+    return { data: fs, bbox: resolveVFeaturesBBox(fs) };
 }
 
 function shiftFeatureCoords(fs: VFeature[], offset: number[]) {

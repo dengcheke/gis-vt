@@ -2,7 +2,14 @@ import type { Feature, LineString, MultiLineString, MultiPoint, MultiPolygon, Po
 import { bboxFromPoints } from "./bbox";
 import type { InputFeature, MaybeArray, Rings, VPoint, VPolygon, VPolyline, VTOption } from "./interface";
 
-export function toVFeatures(fs: InputFeature[], options: VTOption) {
+type O = Pick<VTOption,
+    'calcLineDistance' |
+    'keepLinePointIndex' |
+    'multiLineDistanceStrategy' |
+    'multiLineDistanceLink' |
+    'keepPolygonPointIndex'
+>;
+export function toVFeatures(fs: InputFeature[], options: O) {
     return fs.map(validate)
         .filter(Boolean)
         .map(f => {
@@ -80,7 +87,7 @@ function toVPoint({ geometry, properties, id }: InputFeature<Point | MultiPoint>
 }
 function toVPolyline(
     { geometry, properties, id }: InputFeature<LineString | MultiLineString>,
-    { calcLineDistance, keepLinePointIndex, multiLineDistanceStrategy, multiLineDistanceLink }: VTOption
+    { calcLineDistance, keepLinePointIndex, multiLineDistanceStrategy, multiLineDistanceLink }: O
 ): MaybeArray<VPolyline> {
     if (geometry.type === 'LineString') {
         const { distances, totalDistance } = calcLineDistance ? calcDistance(geometry) : {};
@@ -120,7 +127,7 @@ function toVPolyline(
 }
 function toPolygon(
     { geometry, properties, id }: Feature<Polygon | MultiPolygon>,
-    { keepPolygonPointIndex }: VTOption
+    { keepPolygonPointIndex }: O
 ): MaybeArray<VPolygon> {
     if (geometry.type === 'Polygon') {
         return {

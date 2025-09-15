@@ -1,6 +1,7 @@
 import { groupBy } from "es-toolkit";
 import type { BBox } from "geojson";
-import { bboxDetail, bboxFromPoints, resolveVFeatureBBox } from "./bbox";
+import { bboxDetail, bboxFromPoints } from "./bbox";
+import { resolveVFeaturesBBox } from "./utils";
 import { pixel_to_pointy_axial, pointy_axial_to_pixel } from "./hexagons";
 import { type Coord, type Integer, type Rings, type VFeature, type VPoint, type VPolygon, type VPolyline, type VTNode, type VTOption } from "./interface";
 import { douglasSimplify } from "./simplify";
@@ -131,7 +132,7 @@ function simplify_line(
 
     {
         const f = 1 / resolution;
-        const { width, height, xmin, ymax } = bboxDetail(resolveVFeatureBBox(tiny));
+        const { width, height, xmin, ymax } = bboxDetail(resolveVFeaturesBBox(tiny));
         const maskWidth = Math.ceil(width * f);
         const maskHeight = Math.ceil(height * f);
         const maskLength = maskWidth * maskHeight;
@@ -261,7 +262,7 @@ function simplify_polygon(
     // just use it bbox,
     {
         const f = 1 / tinySize;
-        const { xmin, ymax, width, height } = bboxDetail(resolveVFeatureBBox(tiny));
+        const { xmin, ymax, width, height } = bboxDetail(resolveVFeaturesBBox(tiny));
         const maskWidth = Math.ceil(width * f);
         const maskHeight = Math.ceil(height * f);
         const maskLength = maskWidth * maskHeight;

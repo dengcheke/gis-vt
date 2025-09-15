@@ -1,5 +1,6 @@
 import type { BBox } from "geojson";
-import { bboxFromPoints, resolveVFeatureBBox, xRange, yRange } from "./bbox";
+import { bboxFromPoints, xRange, yRange } from "./bbox";
+import { resolveVFeaturesBBox } from "./utils";
 import { type Coord, type Path, type VFeature, type VPoint, type VPolygon, type VPolyline, type VTOption } from "./interface";
 import { lerp } from "./utils";
 
@@ -52,7 +53,7 @@ export function clipVT(
     if (!result.length) return null;
     return {
         data: result,
-        bbox: resolveVFeatureBBox(result),
+        bbox: resolveVFeaturesBBox(result),
     };
 
     function resolvePoint(p: VPoint) {

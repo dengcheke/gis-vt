@@ -3,3 +3,5 @@ export * from './tile';
 export * from './tile-scheme';
 export * from './vt';
 export * from './interface';
+export { toVFeatures } from './convert';
+export { resolveVFeaturesBBox } from './utils';
