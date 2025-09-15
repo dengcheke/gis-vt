@@ -6,6 +6,7 @@ export default defineConfig({
     build: {
         emptyOutDir: true,
         copyPublicDir: false,
+        sourcemap: true,
         lib: {
             entry: './src/index.ts',
             fileName: format => `index.${format}.js`,

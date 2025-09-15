@@ -395,8 +395,8 @@ function toQuantize(f: VFeature | VFeature[], { xmin, width, height, ymax }: E, 
     }
 
     function transformBBox([xmin, ymin, xmax, ymax]: BBox) {
-        const p1 = transformPoint([xmin, ymin]);
-        const p2 = transformPoint([xmax, ymax]);
+        const p1 = transformPoint([xmin, ymax]);
+        const p2 = transformPoint([xmax, ymin]);
         return [p1, p2].flat() as BBox;
     }
 }
