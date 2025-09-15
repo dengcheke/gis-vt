@@ -1,6 +1,6 @@
 import { assert, random } from "es-toolkit";
 import type { BBox, Feature, GeoJSON } from "geojson";
-import { getTileKey, type TileScheme, type TileXYZ } from "../src";
+import { getTileKey, type TileScheme, type TileXYZW } from "../src";
 import type { Coord, Rings } from "../src/interface";
 import { createEmptyExtent, createExtent, type Extent } from "./extent";
 
@@ -43,46 +43,6 @@ export function loadImg(url: string) {
     })
 }
 
-
-
-//从xyz中解析出瓦片
-export function resolveTileFromXYZ(
-    { origin, lods, tileSize, wrapX, wrapY }: TileScheme,
-    { x, y, z }: TileXYZ
-) {
-    assert(z >= 0 && z === Math.floor(z), `can not get tile at z:${z}`);
-    const { z: z0, resolution: r0, scale: s0 } = lods[0];
-    const resolution = r0 * 2 ** (z0 - z);
-    const scale = s0 * 2 ** (z0 - z);
-    const [ox, oy] = origin;
-
-    const worldTileCount = 1 << z;
-
-    const wx = wrapX ? Math.floor(x / worldTileCount) : 0;
-    const wy = wrapY ? Math.floor(y / worldTileCount) : 0;
-
-    x = wrapX ? (x - wx * worldTileCount) : x;
-    y = wrapY ? (y - wy * worldTileCount) : y;
-
-    const tileSizeX = resolution * tileSize[0];
-    const tileSizeY = resolution * tileSize[1];
-
-    const xmin = ox + x * tileSizeX;
-    const ymax = oy - y * tileSizeY;
-    const xmax = xmin + tileSizeX;
-    const ymin = ymax - tileSizeY;
-    return {
-        key: getTileKey({ x, y, z }),
-        x,
-        y,
-        z,
-        resolution,
-        scale,
-        wx,
-        wy,
-        bbox: [xmin, ymin, xmax, ymax] as BBox
-    }
-}
 export function getCRS(data: any) {
     const crs = data.crs;
     if (!crs) return 'EPSG:4326';

@@ -1,5 +1,5 @@
 import type { Feature } from "geojson";
-import { createTileSchemeFromBBoxAndScale, createVectorTile, getTile, getTileChildren, type Tile, type VTEditParams } from "../../src";
+import { createTileSchemeFromBBoxAndScale, createVectorTile, createTile, getTileChildren, type Tile, type VTEditParams } from "../../src";
 import { bboxDetail } from "../../src/bbox";
 import type { InputFeature, VFeature, VPolygon, VPolyline } from "../../src/interface";
 import { expandFactor, type Extent } from "../extent";
@@ -99,7 +99,7 @@ function draw({ x, y, z }: { z: number, y: number, x: number }) {
 
     if (!tileData) {
         tileData = {
-            tile: getTile(tileScheme, { x, y, z }),
+            tile: createTile(tileScheme, { x, y, z, wx: 0, wy: 0 }),
             features: [],
         }
     }
@@ -128,7 +128,7 @@ function draw({ x, y, z }: { z: number, y: number, x: number }) {
             case "point":
                 continue;
             case "polygon":
-                drawPolygon(vf as VPolygon);
+                drawPolygon(vf as VPolygon); break;
             case "polyline":
                 drawLine(vf as VPolyline);
         }

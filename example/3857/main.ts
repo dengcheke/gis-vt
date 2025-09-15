@@ -1,12 +1,12 @@
 import * as d3 from "d3";
 import type { Feature } from "geojson";
 import GUI from "lil-gui";
-import { createTileSchemeWebMercator, createVectorTile, type VectorTile } from "../../src";
+import { createTileSchemeWebMercator, createVectorTile, resolveTileFromXYZ, type Tile, type VectorTile } from "../../src";
 import { bboxDetail } from "../../src/bbox";
 import type { Coord, InputFeature, VPoint, VPolygon, VPolyline } from "../../src/interface";
 import { lerp } from "../../src/utils";
 import { createExtent, extentFromPoints, type Extent } from "../extent";
-import { extentToBounds, getCRS, loadImg, parseGeoJSON, projFeature, resolveFeaturesExtent, resolveTileFromXYZ } from "../utils";
+import { extentToBounds, getCRS, loadImg, parseGeoJSON, projFeature, resolveFeaturesExtent } from "../utils";
 import { data_wrap } from "./data";
 import './style.scss';
 
@@ -26,7 +26,7 @@ const params = {
 }
 const gui = new GUI();
 //file is big, only in local 
-if(import.meta.env.DEV){
+if (import.meta.env.DEV) {
     gui.add(params, 'data', Object.keys(dataMap)).onChange((v: K) => loadData(v));
 }
 
@@ -158,7 +158,7 @@ function loadData(data: string | Feature[]) {
     }
 }
 
-type T = ReturnType<typeof resolveTileFromXYZ>;
+
 function draw() {
     const { origin, tileSize } = tileScheme;
     const worldExtent = bboxDetail(tileScheme.worldBBox);
@@ -180,7 +180,7 @@ function draw() {
 
     const [unwrapXMin, unwrapYMin, unwrapXMax, unwrapYMax] = extentToBounds(extentFromPoints(corners)).map(Math.floor);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const tiles = [] as T[];
+    const tiles = [] as Tile[];
     for (let x = unwrapXMin; x <= unwrapXMax; x++) {
         for (let y = unwrapYMin; y <= unwrapYMax; y++) {
             tiles.push(resolveTileFromXYZ(tileScheme, { x, y, z }));
@@ -228,7 +228,7 @@ function draw() {
     ctx.stroke();
 
 
-    function drawTile({ bbox, key, z, x, y, wx, wy }: T, showLabel = false, { lineColor, lineWidth } = {
+    function drawTile({ bbox, key, z, x, y, wx, wy }: Tile, showLabel = false, { lineColor, lineWidth } = {
         lineColor: 'black',
         lineWidth: 1
     }) {
@@ -298,7 +298,7 @@ function draw() {
         return points;
     }
 
-    function drawLine({ coordinates, properties }: VPolyline, { wx, wy }: T) {
+    function drawLine({ coordinates, properties }: VPolyline, { wx, wy }: Tile) {
         const offset = [wx * worldExtent.width, -wy * worldExtent.height];
         ctx.save();
         ctx.strokeStyle = properties?.['lineColor'] || 'black';
@@ -312,7 +312,7 @@ function draw() {
         ctx.restore();
     }
 
-    function drawPolygon({ coordinates, properties }: VPolygon, { wx, wy }: T) {
+    function drawPolygon({ coordinates, properties }: VPolygon, { wx, wy }: Tile) {
         const offset = [wx * worldExtent.width, -wy * worldExtent.height];
         ctx.save();
         ctx.fillStyle = properties?.['fillColor'] || 'rgba(0,255,255,0.3)';
@@ -330,7 +330,7 @@ function draw() {
         ctx.restore();
     }
 
-    function drawPoint({ coordinates, properties }: VPoint, { wx, wy }: T) {
+    function drawPoint({ coordinates, properties }: VPoint, { wx, wy }: Tile) {
         const offset = [wx * worldExtent.width, -wy * worldExtent.height];
         ctx.save();
         ctx.fillStyle = properties?.['color'] || 'cyan';

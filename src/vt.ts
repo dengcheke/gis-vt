@@ -11,7 +11,7 @@ import {
     type VectorTileOptions
 } from "./interface";
 import { createVTNode } from "./node";
-import { getTile, getTileChildren, getTileKey, wrapTileIndex } from "./tile";
+import { createTile, getTileChildren, getTileKey, wrapTileIndex, type TileXYZ } from "./tile";
 import { wrap } from "./wrap";
 
 
@@ -114,7 +114,7 @@ export function createVectorTile(props: VectorTileOptions) {
         const stack = [
             {
                 src: source,
-                tile: getTile($options.tileScheme, { z: sz, x: sx, y: sy }),
+                tile: createTile($options.tileScheme, { z: sz, x: sx, y: sy, wx: 0, wy: 0 }),
             },
         ];
         while (stack.length) {
@@ -374,7 +374,7 @@ export function createVectorTile(props: VectorTileOptions) {
     return {
         options: $options,
         tiles: $tiles,
-        getTileData({ z, x, y }: { z: number, x: number, y: number }) {
+        getTileData({ z, x, y }: TileXYZ) {
             const node = getTileNode(z, x, y);
             return node?.simplified?.length
                 ? {

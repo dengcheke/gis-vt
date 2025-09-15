@@ -3,7 +3,7 @@ import type { BBox } from "geojson";
 import { vec2 } from 'gl-matrix';
 import GUI from "lil-gui";
 import { createBufferFromTypedArray, createProgram } from 'twgl.js';
-import { createVectorTile, getTileChildrenXYZ, getTileKey, type Tile, type TileScheme } from "../../src";
+import { createVectorTile, getTileChildrenXYZW, getTileKey, type Tile, type TileScheme } from "../../src";
 import { bboxDetail } from "../../src/bbox";
 import type { Coord, InputFeature, VectorTileOptions, VPolygon, VPolyline } from "../../src/interface";
 import { colorToRGBA, mergePolygonTessellation, shiftCoords, tessellatePolygon } from "../utils";
@@ -287,7 +287,7 @@ function draw() {
     if (tile.z < tileScheme.maxZoom) {
         ctx.font = '16px system-ui';
         ctx.fillStyle = 'black';
-        getTileChildrenXYZ(tile).forEach(xyz => {
+        getTileChildrenXYZW({ ...tile, wx: 0, wy: 0 }).forEach(xyz => {
             const x = xyz.x % 2 === 0 ? 0 : canvas.width / 2;
             const y = xyz.y % 2 === 0 ? 0 : canvas.height / 2;
             ctx.fillText(getTileKey(xyz), x, y + 20);
