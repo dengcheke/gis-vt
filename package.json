@@ -1,6 +1,6 @@
 {
     "name": "gis-vt",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "modified version of geojson-vt",
     "keywords": [
         "vector-tile",
