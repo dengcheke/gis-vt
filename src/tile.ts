@@ -63,18 +63,26 @@ export function getTileParent(tile: Tile, tileScheme: TileScheme) {
     return createTile(tileScheme, getParentXYZW(tile));
 }
 
-export function getTileNeighborXYZ({ x, y, z, wx, wy }: Tile, offset: number[], { wrapX, wrapY }: TileScheme) {
+export function getTileNeighborXYZW({ x, y, z, wx, wy }: Tile, offset: number[], { wrapX, wrapY }: TileScheme){
     x = wrapX ? unwrapTileIndex(z, x, wx) : x;
     y = wrapY ? unwrapTileIndex(z, y, wy) : y;
-    return {
-        x: x + offset[0],
-        y: y + offset[1],
-        z
-    }
-}
+
+    x += offset[0];
+    y += offset[1];
+
+    const worldTileCount = 2 ** z;
+
+    wx = wrapX ? Math.floor(x / worldTileCount) : 0;
+    wy = wrapY ? Math.floor(y / worldTileCount) : 0;
+
+    x = wrapX ? (x - wx * worldTileCount) : x;
+    y = wrapY ? (y - wy * worldTileCount) : y;
+
+    return { x, y, z, wx, wy } as TileXYZW;
+} 
 
 export function getTileNeighbor(tile: Tile, offset: number[], tileScheme: TileScheme) {
-    return resolveTileFromXYZ(tileScheme, getTileNeighborXYZ(tile, offset, tileScheme));
+    return createTile(tileScheme, getTileNeighborXYZW(tile, offset, tileScheme));
 }
 
 //https://github.com/mapbox/geojson-vt/blob/main/src/index.js 
