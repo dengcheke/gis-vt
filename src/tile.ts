@@ -15,6 +15,7 @@ export interface TileXYZW extends TileXYZ {
 
 //xy is wrapped if tileScheme support wrap
 export interface Tile extends TileXYZW {
+    id: string, //z/y/x/wy/wx
     key: string, // z/y/x
     bbox: BBox, //wrapped bbox
     resolution: number,
@@ -89,19 +90,11 @@ export function unwrapTileIndex(z: number, v: number, world: number) {
 
 //xyz可以是任意值
 export function resolveTileFromXYZ(
-    { lods, wrapX, wrapY, tileSize, origin }: TileScheme,
+    tileScheme: TileScheme,
     { x, y, z }: TileXYZ
 ): Tile {
     assert(z >= 0 && z === Math.floor(z), `can not get tile at z:${z}`);
-
-    const { z: z0, resolution: r0, scale: s0 } = lods[0];
-
-    const f = 2 ** (z0 - z);
-    const resolution = r0 * f;
-    const scale = s0 * f;
-
-    const [ox, oy] = origin;
-
+    const { wrapX, wrapY } = tileScheme;
     const worldTileCount = 2 ** z;
 
     const wx = wrapX ? Math.floor(x / worldTileCount) : 0;
@@ -110,24 +103,7 @@ export function resolveTileFromXYZ(
     x = wrapX ? (x - wx * worldTileCount) : x;
     y = wrapY ? (y - wy * worldTileCount) : y;
 
-    const tileSizeX = resolution * tileSize[0];
-    const tileSizeY = resolution * tileSize[1];
-
-    const xmin = ox + x * tileSizeX;
-    const ymax = oy - y * tileSizeY;
-    const xmax = xmin + tileSizeX;
-    const ymin = ymax - tileSizeY;
-    return {
-        key: getTileKey({ x, y, z }),
-        x,
-        y,
-        z,
-        wx,
-        wy,
-        resolution,
-        scale,
-        bbox: [xmin, ymin, xmax, ymax],
-    }
+    return createTile(tileScheme, { x, y, z, wx, wy });
 }
 
 //获取瓦片, x,y,z,wx,wy 必须满足环绕规则
@@ -136,39 +112,32 @@ export function createTile(
     { x, y, z, wx, wy }: TileXYZW,
 ): Tile {
     assert(z >= 0 && z === Math.floor(z), `can not get tile at z:${z}`);
+    if (wrapX) {
+        wx !== 0 && assert(x === wrapTileIndex(z, x), `invalid x:${x}`);
+    } else {
+        assert(wx === 0, `invalid wx:${wx}`)
+    }
+    if (wrapY) {
+        wy !== 0 && assert(y === wrapTileIndex(z, y), `invalid y:${y}`);
+    } else {
+        assert(wy === 0, `invalid wy:${wy}`)
+    }
 
     const { z: z0, resolution: r0, scale: s0 } = lods[0];
     const f = 2 ** (z0 - z);
     const resolution = r0 * f;
     const scale = s0 * f;
 
-    if (wrapX) {
-        if (wx !== 0) {
-            assert(x === wrapTileIndex(z, x), `invalid x:${x}`);
-        }
-    } else {
-        assert(wx === 0, `invalid wx:${wx}`)
-    }
-    if (wrapY) {
-        if (wy !== 0) {
-            assert(y === wrapTileIndex(z, y), `invalid y:${y}`);
-        }
-    } else {
-        assert(wy === 0, `invalid wy:${wy}`)
-    }
-
-    // x = wrapX ? wrapTileIndex(z, x) : x;
-    // y = wrapY ? wrapTileIndex(z, y) : y;
-
-    const [ox, oy] = origin;
 
     const tileSizeX = resolution * tileSize[0];
     const tileSizeY = resolution * tileSize[1];
-    const xmin = ox + x * tileSizeX;
-    const ymax = oy - y * tileSizeY;
+
+    const xmin = origin[0] + x * tileSizeX;
+    const ymax = origin[1] - y * tileSizeY;
     const xmax = xmin + tileSizeX;
     const ymin = ymax - tileSizeY;
     return {
+        id: [z, y, x, wy, wx].join("/"),
         key: getTileKey({ x, y, z }),
         x,
         y,
